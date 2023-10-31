@@ -23,7 +23,7 @@ jobs:
           NUGET_AUTH_TOKEN: ${{ secrets.PAT }}
 
       - name: dotnet build
-        run: dotnet build -c release
+        run: dotnet build Functions -c release
 
   # test:
   #   needs: build

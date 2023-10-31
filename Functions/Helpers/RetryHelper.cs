@@ -18,15 +18,15 @@ namespace Functions.Helpers
         private const int MaxRetryInterval = 25 * 60; // Maximum time to wait
         private const int RetryTimeout = 5 * 60; // Time to wait before a single retry times out
 
-        public static Task ExecuteInvalidDocumentVersionPolicyAsync(string organization, Func<Task> action)
-        {
-            AsyncRetryPolicy invalidDocumentVersionPolicy = Policy
-                .Handle<FlurlHttpException>(ex =>
-                    ex.Call.HttpStatus == HttpStatusCode.BadRequest && ex.Call.Request.IsExtMgtRequest(organization))
-                .WaitAndRetryAsync(MaxNumberOfAttempts, retryAttempt => TimeSpan.FromSeconds(new Random().Next(5, 20)));
+        //public static Task ExecuteInvalidDocumentVersionPolicyAsync(string organization, Func<Task> action)
+        //{
+        //    AsyncRetryPolicy invalidDocumentVersionPolicy = Policy
+        //        .Handle<FlurlHttpException>(ex =>
+        //            ex.Call.HttpStatus == HttpStatusCode.BadRequest && ex.Call.Request.IsExtMgtRequest(organization))
+        //        .WaitAndRetryAsync(MaxNumberOfAttempts, retryAttempt => TimeSpan.FromSeconds(new Random().Next(5, 20)));
 
-            return invalidDocumentVersionPolicy.ExecuteAsync(action);
-        }
+        //    return invalidDocumentVersionPolicy.ExecuteAsync(action);
+        //}
 
         public static RetryOptions ActivityRetryOptions => new RetryOptions(
             firstRetryInterval: TimeSpan.FromSeconds(FirstRetryInterval), 
