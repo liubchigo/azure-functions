@@ -2,6 +2,9 @@ on:
   push:
     tags:
       - v*
+  workflow_run:
+    workflows: [build]
+    types: [completed]
 
 env:
   DOTNET_VERSION: '7.0'
