@@ -2,25 +2,36 @@ on:
   push:
     tags:
       - v*
+
+env:
+  DOTNET_VERSION: '7.0'
         
 name: release
 jobs:
   build:
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@master
-      - uses: actions/setup-dotnet@v1
+      - name: checkout main
+        uses: actions/checkout@main
+  
+      - name: setup dotnet ${{ env.DOTNET_VERSION }}
+        uses: actions/setup-dotnet@v3
         with:
-          dotnet-version: '3.1.100'
+          dotnet-version: ${{ env.DOTNET_VERSION }}
           source-url: https://nuget.pkg.github.com/azure-devops-compliance/index.json
         env:
-          NUGET_AUTH_TOKEN: ${{secrets.GITHUB_TOKEN}}
-      - run: dotnet publish -o ./out Functions/Functions.csproj -c release
-      - run: |
+          NUGET_AUTH_TOKEN: ${ {secrets.PAT }}
+
+      - name: dotnet publish
+        run: dotnet publish -o ./out Functions/Functions.csproj -c release
+
+      - name: zip 
+        run: |
           pushd ./out
           zip -r ../release.zip .
           popd
-      - name: release
+
+      - name: create release
         id: release
         uses: actions/create-release@v1
         env:
@@ -31,7 +42,8 @@ jobs:
           body: ""
           draft: false
           prerelease: false
-      - name: assets
+
+      - name: upload assets
         uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

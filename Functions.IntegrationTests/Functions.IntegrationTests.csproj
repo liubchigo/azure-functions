@@ -1,27 +1,27 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
-        <TargetFramework>netcoreapp3.1</TargetFramework>
+        <TargetFramework>net7.0</TargetFramework>
         <IsPackable>false</IsPackable>
         <LangVersion>latest</LangVersion>
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="AutoFixture.AutoNSubstitute" Version="4.11.0" />
-        <PackageReference Include="AzureDevOps.RestService" Version="1.0.0.785" />
-        <PackageReference Include="AzureFunctions.TestHelpers" Version="3.1.74" />
-        <PackageReference Include="Microsoft.Azure.Cosmos.Table" Version="1.0.6" />
-        <PackageReference Include="Microsoft.Azure.Functions.Extensions" Version="1.0.0" />
-        <PackageReference Include="Microsoft.Azure.Storage.Queue" Version="11.1.2" />
-        <PackageReference Include="Microsoft.Azure.WebJobs" Version="3.0.14" />
-        <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.5.0" />
-        <PackageReference Include="NSubstitute" Version="4.2.1" />
-        <PackageReference Include="xunit" Version="2.4.1" />
-        <PackageReference Include="xunit.runner.visualstudio" Version="2.4.1">
+        <PackageReference Include="AutoFixture.AutoNSubstitute" Version="4.18.0" />
+        <PackageReference Include="AzureDevOps.RestService" Version="1.0.0.816" />
+        <PackageReference Include="AzureFunctions.TestHelpers" Version="4.0.101" />
+        <PackageReference Include="Microsoft.Azure.Cosmos.Table" Version="1.0.8" />
+        <PackageReference Include="Microsoft.Azure.Functions.Extensions" Version="1.1.0" />
+        <PackageReference Include="Microsoft.Azure.Storage.Queue" Version="11.2.3" />
+        <PackageReference Include="Microsoft.Azure.WebJobs" Version="3.0.39" />
+        <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.7.2" />
+        <PackageReference Include="NSubstitute" Version="5.1.0" />
+        <PackageReference Include="xunit" Version="2.5.3" />
+        <PackageReference Include="xunit.runner.visualstudio" Version="2.5.3">
           <PrivateAssets>all</PrivateAssets>
           <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
-        <PackageReference Include="coverlet.msbuild" Version="2.8.0">
+        <PackageReference Include="coverlet.msbuild" Version="6.0.0">
             <PrivateAssets>all</PrivateAssets>
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
