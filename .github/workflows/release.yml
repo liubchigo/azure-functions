@@ -23,7 +23,7 @@ jobs:
           dotnet-version: ${{ env.DOTNET_VERSION }}
           source-url: https://nuget.pkg.github.com/azure-devops-compliance/index.json
         env:
-          NUGET_AUTH_TOKEN: ${ {secrets.PAT }}
+          NUGET_AUTH_TOKEN: ${{ secrets.PAT }}
 
       - name: dotnet publish
         run: dotnet publish -o ./out Functions/Functions.csproj -c release
