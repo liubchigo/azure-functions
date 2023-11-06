@@ -22,7 +22,7 @@ export name=
 az group create --name $rg --location westeurope
 az storage account create -g $rg -n $name
 
-function=$(az functionapp create -g $rg -n $name -s $name --consumption-plan-location westeurope --os-type windows --runtime dotnet --functions-version 3 -o tsv --query "id")
+function=$(az functionapp create -g $rg -n $name -s $name --consumption-plan-location westeurope --os-type windows --runtime dotnet-isolated --functions-version 4 -o tsv --query "id")
 az ad sp create-for-rbac --name $name --role contributor --scopes $function --sdk-auth
 
 az functionapp cors add -a https://$extension_publisher.gallerycdn.vsassets.io -n $name -g $rg
@@ -50,7 +50,7 @@ function Install-AzDevComplianceFunction {
     az group create --name $rg --location westeurope
     az storage account create -g $rg -n $name
     
-    $function = az functionapp create -g $rg -n $name -s $name --consumption-plan-location westeurope --os-type windows --runtime dotnet --functions-version 3 -o tsv --query "id"
+    $function = az functionapp create -g $rg -n $name -s $name --consumption-plan-location westeurope --os-type windows --runtime dotnet-isolated --functions-version 4 -o tsv --query "id"
     az ad sp create-for-rbac --name $name --role contributor --scopes $function --sdk-auth
     
     az functionapp cors add -a https://$extension_publisher.gallerycdn.vsassets.io -n $name -g $rg
