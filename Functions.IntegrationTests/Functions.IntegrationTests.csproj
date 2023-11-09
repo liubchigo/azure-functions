@@ -1,14 +1,13 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
-        <TargetFramework>net7.0</TargetFramework>
+        <TargetFramework>net6.0</TargetFramework>
         <IsPackable>false</IsPackable>
         <LangVersion>latest</LangVersion>
     </PropertyGroup>
 
     <ItemGroup>
         <PackageReference Include="AutoFixture.AutoNSubstitute" Version="4.18.0" />
-        <PackageReference Include="AzureDevOps.RestService" Version="1.0.0.816" />
         <PackageReference Include="AzureFunctions.TestHelpers" Version="4.0.101" />
         <PackageReference Include="Microsoft.Azure.Cosmos.Table" Version="1.0.8" />
         <PackageReference Include="Microsoft.Azure.Functions.Extensions" Version="1.1.0" />

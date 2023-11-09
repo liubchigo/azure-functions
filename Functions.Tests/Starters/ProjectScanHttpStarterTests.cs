@@ -72,7 +72,7 @@ namespace Functions.Tests.Starters
                 mock.Object);
 
             mock.Verify(x => x.WaitForCompletionOrCreateCheckStatusResponseAsync(request, It.IsAny<string>(),
-                It.IsAny<TimeSpan>(), TimeSpan.FromSeconds(1)));
+                It.IsAny<TimeSpan>(), TimeSpan.FromSeconds(1), false));
             client.Verify();
             result?.Dispose();
         }

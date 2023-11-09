@@ -3,7 +3,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using AzureDevOps.Compliance.Rules;
 using AzureFunctions.TestHelpers;
-using Dynamitey.DynamicObjects;
 using Newtonsoft.Json.Linq;
 using SecurePipelineScan.VstsService;
 using Xunit;
@@ -59,7 +58,7 @@ namespace Functions.IntegrationTests
         {
             var response = await client.PostAsync(new VstsRequest<object, JObject>(
                     "_apis/WebPlatformAuth/SessionToken",
-                    new Dictionary { ["api-version"] = "3.2-preview.1" }),
+                    new Dictionary<string, object> { ["api-version"] = "3.2-preview.1" }),
                 new
                 {
                     ExtensionName = extension,

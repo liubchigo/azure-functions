@@ -1,10 +1,10 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFramework>net7.0</TargetFramework>
-    <AzureFunctionsVersion>v3</AzureFunctionsVersion>
+    <TargetFramework>net6.0</TargetFramework>
+    <AzureFunctionsVersion>v4</AzureFunctionsVersion>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
-    <DefineConstants>TRACE;DEBUG;NETCOREAPP3_1</DefineConstants>
+    <DefineConstants>TRACE;DEBUG;</DefineConstants>
     <_IsFunctionsSdkBuild Condition="$(_FunctionsTaskFramework) != ''">true</_IsFunctionsSdkBuild>
     <_FunctionsExtensionsDir>$(TargetDir)</_FunctionsExtensionsDir>
     <_FunctionsExtensionsDir Condition="$(_IsFunctionsSdkBuild) == 'true'">$(_FunctionsExtensionsDir)bin</_FunctionsExtensionsDir>
@@ -15,11 +15,8 @@
   </PropertyGroup>
   
   <ItemGroup>
-    <PackageReference Include="AzureDevOps.Compliance.Rules" Version="1.0.0.804" />
-    <PackageReference Include="Microsoft.Azure.Functions.Extensions" Version="1.1.0" />
-    <PackageReference Include="Microsoft.ApplicationInsights.SnapshotCollector" Version="1.4.4" />
-    <PackageReference Include="Microsoft.Azure.WebJobs.Extensions.Storage" Version="5.2.1" />
-    <PackageReference Include="Microsoft.Extensions.Logging" Version="7.0.0" />
+    <PackageReference Include="AzureDevOps.Compliance.Rules" Version="1.0.0.805" /><PackageReference Include="Microsoft.Azure.WebJobs.Extensions.Storage" Version="5.2.1" />
+    <PackageReference Include="Microsoft.Extensions.Logging" Version="6.0.0" />
     <PackageReference Include="Microsoft.NET.Sdk.Functions" Version="4.2.0" />
     <PackageReference Include="Microsoft.Azure.WebJobs.Extensions.DurableTask" Version="2.12.0" />
     <PackageReference Include="WindowsAzure.Storage" Version="9.3.3" />
