@@ -31,6 +31,11 @@
       <CopyToPublishDirectory>Never</CopyToPublishDirectory>
     </None>
   </ItemGroup>
+  <ItemGroup>
+	<FunctionsPreservedDependencies Include="Microsoft.IdentityModel.Logging.dll" />
+	<FunctionsPreservedDependencies Include="Microsoft.IdentityModel.Tokens.dll" />
+	<FunctionsPreservedDependencies Include="System.IdentityModel.Tokens.Jwt.dll" />
+  </ItemGroup>
 
   <Target Name="CopyExtensionsJson" AfterTargets="_GenerateFunctionsAndCopyContentFiles">
     <Message Importance="High" Text="Overwritting extensions.json file with one from build." />
