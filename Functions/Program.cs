@@ -2,27 +2,28 @@
 using System.Net.Http;
 using AzureDevOps.Compliance.Rules;
 using Functions.Helpers;
-using Functions.Routing;
-using Microsoft.Azure.WebJobs;
-using Microsoft.Azure.WebJobs.Hosting;
+//using Functions.Routing;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 using SecurePipelineScan.VstsService;
 using SecurePipelineScan.VstsService.Security;
 
-[assembly: WebJobsStartup(typeof(Functions.Startup))]
-
 namespace Functions
 {
-    public class Startup : IWebJobsStartup
+    public class Program
     {
-        public void Configure(IWebJobsBuilder builder)
+        public static void Main()
         {
-            if (builder == null)
-                throw new ArgumentNullException(nameof(builder));
+            var host = new HostBuilder()
+                .ConfigureFunctionsWebApplication()
+                .ConfigureServices((context, services) =>
+                {
+                    RegisterServices(services);
+                })
+                .Build();
 
-            builder.AddRoutePriority();
-            RegisterServices(builder.Services);
+            host.Run();
         }
 
         private static void RegisterServices(IServiceCollection services)

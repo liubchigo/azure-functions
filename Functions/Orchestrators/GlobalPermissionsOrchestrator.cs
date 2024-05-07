@@ -1,14 +1,14 @@
 using Functions.Activities;
 using Functions.Model;
-using Microsoft.Azure.WebJobs;
 using System.Threading.Tasks;
 using Functions.Helpers;
 using Functions.Starters;
 using System.Collections.Generic;
-using Microsoft.Azure.WebJobs.Extensions.DurableTask;
 using Response = SecurePipelineScan.VstsService.Response;
 using System;
 using AzureDevOps.Compliance.Rules;
+using Microsoft.Azure.Functions.Worker;
+using Microsoft.DurableTask;
 
 namespace Functions.Orchestrators
 {
@@ -18,8 +18,8 @@ namespace Functions.Orchestrators
 
         public GlobalPermissionsOrchestrator(EnvironmentConfig config) => _config = config;
 
-        [FunctionName(nameof(GlobalPermissionsOrchestrator))]
-        public async Task RunAsync([OrchestrationTrigger]IDurableOrchestrationContext context)
+        [Function(nameof(GlobalPermissionsOrchestrator))]
+        public async Task RunAsync([OrchestrationTrigger] TaskOrchestrationContext context)
         {
             var (project, scanDate) = 
                 context.GetInput<(Response.Project, DateTime)>();
@@ -34,9 +34,8 @@ namespace Functions.Orchestrators
                     _config, project.Id),
                 Reports = new List<ItemExtensionData>
                 {
-                    await context.CallActivityWithRetryAsync<ItemExtensionData>(nameof(
-                        ScanGlobalPermissionsActivity), RetryHelper.ActivityRetryOptions, 
-                        project)
+                    await context.CallActivityAsync<ItemExtensionData>(nameof(
+                        ScanGlobalPermissionsActivity), project, RetryHelper.ActivityRetryOptions())
                 }
             };
 

@@ -4,8 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using AzureDevOps.Compliance.Rules;
 using Functions.Model;
-using Microsoft.Azure.WebJobs;
-using Microsoft.Azure.WebJobs.Extensions.DurableTask;
+using Microsoft.Azure.Functions.Worker;
 using SecurePipelineScan.VstsService.Response;
 using Task = System.Threading.Tasks.Task;
 
@@ -23,7 +22,7 @@ namespace Functions.Activities
             _rules = rules;
         }
 
-        [FunctionName(nameof(ScanReleasePipelinesActivity))]
+        [Function(nameof(ScanReleasePipelinesActivity))]
         public async Task<ItemExtensionData> RunAsync(
             [ActivityTrigger]
             (Project project, ReleaseDefinition releasePipeline) input)

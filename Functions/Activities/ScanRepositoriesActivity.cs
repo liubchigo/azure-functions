@@ -3,10 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using AzureDevOps.Compliance.Rules;
-using Functions.Helpers;
 using Functions.Model;
-using Microsoft.Azure.WebJobs;
-using Microsoft.Azure.WebJobs.Extensions.DurableTask;
+using Microsoft.Azure.Functions.Worker;
 using Response = SecurePipelineScan.VstsService.Response;
 
 namespace Functions.Activities
@@ -23,7 +21,7 @@ namespace Functions.Activities
             _rules = rules;
         }
 
-        [FunctionName(nameof(ScanRepositoriesActivity))]
+        [Function(nameof(ScanRepositoriesActivity))]
         public async Task<ItemExtensionData> RunAsync(
             [ActivityTrigger] (Response.Project, Response.Repository) input)
         {

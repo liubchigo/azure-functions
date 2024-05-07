@@ -2,8 +2,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using AzureDevOps.Compliance.Rules;
-using Microsoft.Azure.WebJobs;
-using Microsoft.Azure.WebJobs.Extensions.DurableTask;
+using Microsoft.Azure.Functions.Worker;
+using Microsoft.DurableTask;
 using SecurePipelineScan.VstsService.Response;
 using Task = System.Threading.Tasks.Task;
 
@@ -19,8 +19,8 @@ namespace Functions.Orchestrators
             RuleScopes.Repositories
         };
 
-        [FunctionName(nameof(ProjectScanOrchestrator))]
-        public async Task RunAsync([OrchestrationTrigger] IDurableOrchestrationContext context)
+        [Function(nameof(ProjectScanOrchestrator))]
+        public async Task RunAsync([OrchestrationTrigger] TaskOrchestrationContext context)
         {
             if (context == null)
             {

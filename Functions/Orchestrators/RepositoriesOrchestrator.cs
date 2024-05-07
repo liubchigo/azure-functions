@@ -7,8 +7,8 @@ using Functions.Activities;
 using Functions.Helpers;
 using Functions.Model;
 using Functions.Starters;
-using Microsoft.Azure.WebJobs;
-using Microsoft.Azure.WebJobs.Extensions.DurableTask;
+using Microsoft.Azure.Functions.Worker;
+using Microsoft.DurableTask;
 using SecurePipelineScan.VstsService.Response;
 using Task = System.Threading.Tasks.Task;
 
@@ -20,14 +20,14 @@ namespace Functions.Orchestrators
 
         public RepositoriesOrchestrator(EnvironmentConfig config) => _config = config;
 
-        [FunctionName(nameof(RepositoriesOrchestrator))]
-        public async Task RunAsync([OrchestrationTrigger] IDurableOrchestrationContext context)
+        [Function(nameof(RepositoriesOrchestrator))]
+        public async Task RunAsync([OrchestrationTrigger] TaskOrchestrationContext context)
         {
             var (project, scanDate) =
                 context.GetInput<(Project, DateTime)>();
 
-            var repositories = await context.CallActivityWithRetryAsync<IEnumerable<Repository>>(nameof(GetRepositoriesActivity),
-                RetryHelper.ActivityRetryOptions, project);
+            var repositories = await context.CallActivityAsync<IEnumerable<Repository>>(nameof(GetRepositoriesActivity),
+                project, RetryHelper.ActivityRetryOptions());
 
             var data = new ItemsExtensionData
             {
@@ -45,9 +45,9 @@ namespace Functions.Orchestrators
                 (repositories: data, RuleScopes.Repositories));
         }
 
-        private static Task<ItemExtensionData> StartScanActivityAsync(IDurableOrchestrationContext context,
+        private static Task<ItemExtensionData> StartScanActivityAsync(TaskOrchestrationContext context,
                 Repository repository, Project project) =>
-            context.CallActivityWithRetryAsync<ItemExtensionData>(nameof(ScanRepositoriesActivity),
-                RetryHelper.ActivityRetryOptions, (project, repository));
+            context.CallActivityAsync<ItemExtensionData>(nameof(ScanRepositoriesActivity),
+                (project, repository), RetryHelper.ActivityRetryOptions());
     }
 }

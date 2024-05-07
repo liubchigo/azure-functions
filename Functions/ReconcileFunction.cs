@@ -1,7 +1,6 @@
 using Functions.Model;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Azure.WebJobs;
-using Microsoft.Azure.WebJobs.Extensions.Http;
+using Microsoft.Azure.Functions.Worker;
 using SecurePipelineScan.VstsService;
 using System;
 using System.Collections.Generic;
@@ -38,7 +37,7 @@ namespace Functions
             _tokenizer = tokenizer;
         }
 
-        [FunctionName(nameof(ReconcileFunction))]
+        [Function(nameof(ReconcileFunction))]
         public async Task<IActionResult> ReconcileAsync([HttpTrigger(AuthorizationLevel.Anonymous, Route = "reconcile/{organization}/{project}/{scope}/{ruleName}/{item?}")]HttpRequestMessage request,
             string organization,
             string project,
@@ -89,7 +88,7 @@ namespace Functions
             return JsonConvert.DeserializeObject(content);
         }
 
-        [FunctionName("HasPermissionToReconcileFunction")]
+        [Function("HasPermissionToReconcileFunction")]
         public async Task<IActionResult> HasPermissionAsync([HttpTrigger(AuthorizationLevel.Anonymous,
             Route = "reconcile/{organization}/{project}/haspermissions")]HttpRequestMessage request,
             string organization,

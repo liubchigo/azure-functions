@@ -1,12 +1,11 @@
 ﻿using Functions.Model;
-using Microsoft.Azure.WebJobs;
 using Response = SecurePipelineScan.VstsService.Response;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.Azure.WebJobs.Extensions.DurableTask;
 using System.Collections.Generic;
 using AzureDevOps.Compliance.Rules;
+using Microsoft.Azure.Functions.Worker;
 
 namespace Functions.Activities
 {
@@ -22,7 +21,7 @@ namespace Functions.Activities
             _rules = rules;
         }
 
-        [FunctionName(nameof(ScanBuildPipelinesActivity))]
+        [Function(nameof(ScanBuildPipelinesActivity))]
         public async Task<ItemExtensionData> RunAsync(
             [ActivityTrigger] (Response.Project, Response.BuildDefinition) input)
         {

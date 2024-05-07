@@ -1,12 +1,11 @@
-﻿using Microsoft.Azure.WebJobs;
-using SecurePipelineScan.VstsService.Response;
+﻿using SecurePipelineScan.VstsService.Response;
 using System.Collections.Generic;
 using System.Linq;
-using Functions.Helpers;
 using Task = System.Threading.Tasks.Task;
 using System.Threading;
-using Microsoft.Azure.WebJobs.Extensions.DurableTask;
 using System;
+using Microsoft.DurableTask;
+using Microsoft.Azure.Functions.Worker;
 
 namespace Functions.Orchestrators
 {
@@ -14,8 +13,8 @@ namespace Functions.Orchestrators
     {
         private const int TimerInterval = 25; 
 
-        [FunctionName(nameof(ProjectScanSupervisor))]
-        public async Task RunAsync([OrchestrationTrigger] IDurableOrchestrationContext context)
+        [Function(nameof(ProjectScanSupervisor))]
+        public async Task RunAsync([OrchestrationTrigger] TaskOrchestrationContext context)
         {
             var scanDate = context.CurrentUtcDateTime;
             var projects = context.GetInput<List<Project>>();
@@ -25,7 +24,7 @@ namespace Functions.Orchestrators
         }
 
         private static async Task StartProjectScanOrchestratorWithTimerAsync(
-            IDurableOrchestrationContext context, Project project, int index, DateTime scanDate)
+            TaskOrchestrationContext context, Project project, int index, DateTime scanDate)
         {
             await context.CreateTimer(context.CurrentUtcDateTime.AddSeconds(index * TimerInterval), CancellationToken.None);
             await context.CallSubOrchestratorAsync(nameof(ProjectScanOrchestrator),

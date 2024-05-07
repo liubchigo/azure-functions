@@ -1,7 +1,7 @@
+using Microsoft.DurableTask;
 using System;
 using System.Net.Sockets;
 using System.Threading.Tasks;
-using Microsoft.Azure.WebJobs.Extensions.DurableTask;
 
 namespace Functions.Helpers
 {
@@ -13,22 +13,29 @@ namespace Functions.Helpers
         private const int MaxRetryInterval = 25 * 60; // Maximum time to wait
         private const int RetryTimeout = 5 * 60; // Time to wait before a single retry times out
 
-        public static RetryOptions ActivityRetryOptions => new RetryOptions(
-            firstRetryInterval: TimeSpan.FromSeconds(FirstRetryInterval), 
-            maxNumberOfAttempts: MaxNumberOfAttempts) 
-            {
-                BackoffCoefficient = BackoffCoefficient, 
-                Handle = IsRetryableActivity,
-                MaxRetryInterval = TimeSpan.FromSeconds(MaxRetryInterval), 
-                RetryTimeout = TimeSpan.FromSeconds(RetryTimeout) 
-            };
+        public static TaskOptions ActivityRetryOptions()
+        {
+            return TaskOptions.FromRetryPolicy(
+                new RetryPolicy(
+                    firstRetryInterval: TimeSpan.FromSeconds(FirstRetryInterval),
+                    maxNumberOfAttempts: MaxNumberOfAttempts,
+                    backoffCoefficient: BackoffCoefficient,
+                    retryTimeout: TimeSpan.FromSeconds(RetryTimeout),
+                    maxRetryInterval: TimeSpan.FromSeconds(MaxRetryInterval)
+            ));
 
-        private static bool IsRetryableActivity(Exception exception) => 
-            exception.InnerException != null &&
-                (exception.InnerException.Message.Contains("Call failed with status code 429") ||
-                exception.InnerException.Message.Contains("A connection attempt failed because " +
+            //TODO figure out how to add RetryHandler
+            //var handlerOptions = TaskOptions.FromRetryHandler(retryContext =>
+            //{
+            //    return IsRetryableActivity(retryContext.LastFailure);
+            //});
+        }
+
+        private static bool IsRetryableActivity(TaskFailureDetails failureDetails) => 
+                failureDetails.ErrorMessage.Contains("Call failed with status code 429") ||
+                failureDetails.ErrorMessage.Contains("A connection attempt failed because " +
                     "the connected party did not properly respond after a period of time") ||
-                exception.InnerException is SocketException ||
-                exception.InnerException is TaskCanceledException);
+                failureDetails.IsCausedBy<SocketException>() ||
+                failureDetails.IsCausedBy<TaskCanceledException>();
     }
 }

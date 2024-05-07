@@ -7,8 +7,8 @@ using Functions.Activities;
 using Functions.Helpers;
 using Functions.Model;
 using Functions.Starters;
-using Microsoft.Azure.WebJobs;
-using Microsoft.Azure.WebJobs.Extensions.DurableTask;
+using Microsoft.Azure.Functions.Worker;
+using Microsoft.DurableTask;
 using Response = SecurePipelineScan.VstsService.Response;
 
 namespace Functions.Orchestrators
@@ -19,16 +19,16 @@ namespace Functions.Orchestrators
 
         public ReleasePipelinesOrchestrator(EnvironmentConfig config) => _config = config;
 
-        [FunctionName(nameof(ReleasePipelinesOrchestrator))]
+        [Function(nameof(ReleasePipelinesOrchestrator))]
         public async Task RunAsync(
-            [OrchestrationTrigger] IDurableOrchestrationContext context)
+            [OrchestrationTrigger] TaskOrchestrationContext context)
         {
             var (project, scanDate) = 
                 context.GetInput<(Response.Project, DateTime)>();
            
             var releasePipelines =
-                await context.CallActivityWithRetryAsync<List<Response.ReleaseDefinition>>(
-                nameof(GetReleasePipelinesActivity), RetryHelper.ActivityRetryOptions, project.Id);
+                await context.CallActivityAsync<List<Response.ReleaseDefinition>>(
+                nameof(GetReleasePipelinesActivity), project.Id, RetryHelper.ActivityRetryOptions());
 
             var data = new ItemsExtensionData
             {
@@ -46,10 +46,9 @@ namespace Functions.Orchestrators
                 (releasePipelines: data, RuleScopes.ReleasePipelines));
         }
 
-        private static Task<ItemExtensionData> StartScanActivityAsync(IDurableOrchestrationContext context,
+        private static Task<ItemExtensionData> StartScanActivityAsync(TaskOrchestrationContext context,
                 Response.ReleaseDefinition r, Response.Project project) =>
-            context.CallActivityWithRetryAsync<ItemExtensionData>(
-                nameof(ScanReleasePipelinesActivity), RetryHelper.ActivityRetryOptions,
-                (project, r));
+            context.CallActivityAsync<ItemExtensionData>(
+                nameof(ScanReleasePipelinesActivity), (project, r), RetryHelper.ActivityRetryOptions());
     }
 }

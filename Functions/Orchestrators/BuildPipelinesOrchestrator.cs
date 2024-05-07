@@ -7,8 +7,8 @@ using Functions.Activities;
 using Functions.Helpers;
 using Functions.Model;
 using Functions.Starters;
-using Microsoft.Azure.WebJobs;
-using Microsoft.Azure.WebJobs.Extensions.DurableTask;
+using Microsoft.Azure.Functions.Worker;
+using Microsoft.DurableTask;
 using Response = SecurePipelineScan.VstsService.Response;
 
 namespace Functions.Orchestrators
@@ -19,15 +19,15 @@ namespace Functions.Orchestrators
 
         public BuildPipelinesOrchestrator(EnvironmentConfig config) => _config = config;
 
-        [FunctionName(nameof(BuildPipelinesOrchestrator))]
+        [Function(nameof(BuildPipelinesOrchestrator))]
         public async Task RunAsync(
-            [OrchestrationTrigger] IDurableOrchestrationContext context)
+            [OrchestrationTrigger] TaskOrchestrationContext context)
         {
             var (project, scanDate) = 
                 context.GetInput<(Response.Project, DateTime)>();
             
-            var buildPipelines = await context.CallActivityWithRetryAsync<List<Response.BuildDefinition>>(
-                nameof(GetBuildPipelinesActivity), RetryHelper.ActivityRetryOptions, project.Id);
+            var buildPipelines = await context.CallActivityAsync<List<Response.BuildDefinition>>(
+                nameof(GetBuildPipelinesActivity), project.Id, options: RetryHelper.ActivityRetryOptions());
 
             var data = new ItemsExtensionData
             {
@@ -45,9 +45,9 @@ namespace Functions.Orchestrators
                 (buildPipelines: data, RuleScopes.BuildPipelines));
         }
 
-        private static Task<ItemExtensionData> StartScanActivityAsync(IDurableOrchestrationContext context, 
+        private static Task<ItemExtensionData> StartScanActivityAsync(TaskOrchestrationContext context, 
             Response.BuildDefinition b, Response.Project project) => 
-            context.CallActivityWithRetryAsync<ItemExtensionData>(nameof(ScanBuildPipelinesActivity),
-                RetryHelper.ActivityRetryOptions, (project, b));
+            context.CallActivityAsync<ItemExtensionData>(nameof(ScanBuildPipelinesActivity),
+                (project, b), options: RetryHelper.ActivityRetryOptions());
     }
 }

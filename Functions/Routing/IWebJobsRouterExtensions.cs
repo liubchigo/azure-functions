@@ -1,45 +1,44 @@
-using System.Diagnostics.CodeAnalysis;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
-using Microsoft.AspNetCore.Routing;
-using Microsoft.Azure.WebJobs.Extensions.Http;
+//using System.Diagnostics.CodeAnalysis;
+//using System.Collections.Generic;
+//using System.Linq;
+//using System.Reflection;
+//using Microsoft.AspNetCore.Routing;
 
-namespace Functions.Routing
-{
-    [ExcludeFromCodeCoverage]
-    public static class IWebJobsRouterExtensions
-    {
-        public static List<Route> GetRoutes(this IWebJobsRouter router)
-        {
-            var type = typeof(WebJobsRouter);
-            var fields = type.GetRuntimeFields();
-            var field = fields.FirstOrDefault(f => f.Name == "_functionRoutes");
+//namespace Functions.Routing
+//{
+//    [ExcludeFromCodeCoverage]
+//    public static class IWebJobsRouterExtensions
+//    {
+//        public static List<Route> GetRoutes(this IWebJobsRouter router)
+//        {
+//            var type = typeof(WebJobsRouter);
+//            var fields = type.GetRuntimeFields();
+//            var field = fields.FirstOrDefault(f => f.Name == "_functionRoutes");
 
-            if (field == null)
-                return new List<Route>();
+//            if (field == null)
+//                return new List<Route>();
 
-            var functionRoutes = field.GetValue(router);
-            var routeCollection = (RouteCollection)functionRoutes;
-            var routes = GetRoutes(routeCollection);
+//            var functionRoutes = field.GetValue(router);
+//            var routeCollection = (RouteCollection)functionRoutes;
+//            var routes = GetRoutes(routeCollection);
 
-            return routes;
-        }
+//            return routes;
+//        }
 
-        static List<Route> GetRoutes(RouteCollection collection)
-        {
-            var routes = new List<Route>();
-            for (var i = 0; i < collection.Count; i++)
-            {
-                if (collection[i] is RouteCollection nestedCollection)
-                {
-                    routes.AddRange(GetRoutes(nestedCollection));
-                    continue;
-                }
-                routes.Add((Route)collection[i]);
-            }
+//        static List<Route> GetRoutes(RouteCollection collection)
+//        {
+//            var routes = new List<Route>();
+//            for (var i = 0; i < collection.Count; i++)
+//            {
+//                if (collection[i] is RouteCollection nestedCollection)
+//                {
+//                    routes.AddRange(GetRoutes(nestedCollection));
+//                    continue;
+//                }
+//                routes.Add((Route)collection[i]);
+//            }
 
-            return routes;
-        }
-    }
-}
+//            return routes;
+//        }
+//    }
+//}

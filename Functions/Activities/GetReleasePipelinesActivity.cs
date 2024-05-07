@@ -2,8 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.Azure.WebJobs;
-using Microsoft.Azure.WebJobs.Extensions.DurableTask;
+using Microsoft.Azure.Functions.Worker;
 using SecurePipelineScan.VstsService;
 using SecurePipelineScan.VstsService.Requests;
 using Response = SecurePipelineScan.VstsService.Response;
@@ -16,7 +15,7 @@ namespace Functions.Activities
 
         public GetReleasePipelinesActivity(IVstsRestClient azuredo) => _azuredo = azuredo;
 
-        [FunctionName(nameof(GetReleasePipelinesActivity))]
+        [Function(nameof(GetReleasePipelinesActivity))]
         public async Task<IList<Response.ReleaseDefinition>> RunAsync([ActivityTrigger]
             string projectId)
         {
